@@ -12,8 +12,8 @@ game.module(
     game.addAsset('media/bubble.png', 'bubble');
     game.addAsset('media/font.fnt');
     game.addAsset('media/homard.png', 'homard');
-
-    // game.addAsset('media/BUBBLE.WAV', 'plop');
+    game.addAsset('media/elephant.png', 'elephant');
+    game.addAudio('media/BUBBLE.WAV', 'plop');
 
 
 
@@ -30,7 +30,7 @@ aWildHomardAppeared = function(parent) {
   };
   parent.addChild(homard);
 };
-
+var canAddMore = true;
 Bubble = game.Sprite.extend({
   anchor: {x: 0.5, y:0.5},
   interactive: true,
@@ -49,10 +49,12 @@ Bubble = game.Sprite.extend({
 
 
 
+    canAddMore = false;
     var tween = new game.Tween(this);
     tween.to({alpha: 0.8}, 400);
     tween.easing(game.Tween.Easing.Quadratic.InOut);
     tween.start();
+    tween.onComplete(function() { canAddMore = true;});
 
 
     this.body = new game.Body({
@@ -67,6 +69,10 @@ Bubble = game.Sprite.extend({
     var shape = new game.Circle(100);
     this.body.addShape(shape);
     game.scene.world.addBody(this.body);
+
+
+    game.audio.playSound('plop');
+
   },
 
   collide: function() {
@@ -85,7 +91,6 @@ Bubble = game.Sprite.extend({
     // this.alpha = 0;
     console.log(1, ev);
 
-    // game.audio.playSound('plop');
 
   },
 
@@ -117,9 +122,24 @@ SceneGame = game.Scene.extend({
       this.stage.addChild(this.bubbleContainer);
     },
     mousedown: function(ev, x, y) {
+      if (!canAddMore) {
+        return;
+      }
+
       var i;
       var that = this;
       // console.log(2,ev);
+      /*
+      if (Math.random() < 0.1) {
+        anElephantAppeared(this.stage);
+        var elephant = new game.Sprite('elephant', ev.global.x, ev.global.y);
+        var tween = new game.Tween(elephant);
+        tween.oncomplete = function() {
+          elephant.remove();
+        }
+        twee.start();
+
+      } else */
       if (nextNumber < 10) {
         var bubble = new Bubble('bubble', ev.global.x, ev.global.y);
         console.log(bubble);
