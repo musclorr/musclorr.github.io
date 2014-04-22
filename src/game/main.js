@@ -36,7 +36,7 @@ Bubble = game.Sprite.extend({
   interactive: true,
   init: function(img, x, y) {
     this._super.apply(this, arguments);
-    this.alpha=0.7;
+    this.alpha=0.0;
 
     game.scene.addObject(this);
 
@@ -87,6 +87,19 @@ Bubble = game.Sprite.extend({
 
     // game.audio.playSound('plop');
 
+  },
+
+  removegently: function() {
+    var that=this;
+    this.interactive = false;
+    var tween = new game.Tween(this.scale);
+    tween.to({x: 0.01, y:0.01}, 400);
+    tween.easing(game.Tween.Easing.Quadratic.InOut);
+    tween.onComplete(function() {
+      that.remove();
+    });
+
+    tween.start();
   }
 
 });
@@ -124,9 +137,8 @@ SceneGame = game.Scene.extend({
         for (i = 0; i < this.bubbles.length; i++) {
           //this.bubbles[i].interactive=false;
           game.scene.world.removeBody(this.bubbles[i].body);
-
+          this.bubbles[i].removegently();
           //this.stage.remove(this.bubbles[i]);
-          this.bubbles[i].remove();
         }
         this.bubbles = [];
       }
